@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+{% load django_bootstrap5 %}
+{% load custom_filters %}
+{% block content %}
+<div class="fs-4">견적신청 - 프로젝트 정보 입력(2/2)</div>
+
+<div class="row mt-2 mb-2"></div>
+
+<form method="POST" id="baselineForm" enctype="multipart/form-data">
+    {% csrf_token %}
+    <!-- project baseline input -->
+    <div class="col-md-8" id="formContainer">
+        {{ baseline_form.management_form }}
+        {% for form in baseline_form %}
+            {% with index=forloop.counter0 %}
+            {% with project_scope_item=project_info.project_scope|getitem:index %}
+            <div class="baseline-form shadow p-3 mb-3">
+                <div class="fs-4">{{ project_scope_item }}</div>
+                <label class="form-label mt-2">
+                    점검 공수 산정을 위해 개발대상의 화면 수 또는 점검대상 URL 수를 기입해주세요. <span class="text-danger">(*)</span>
+                </label>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        {% bootstrap_label form.calc_criteria.label %}
+                        {% for radio in form.calc_criteria %}
+                        <div class="custom-control custom-radio">
+                            {{ radio.tag }}
+                            <label class="custom-control-label" for="{{ radio.id_for_label }}">{{ radio.choice_label }}</label>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <div class="mb-3">
+                        {% bootstrap_field form.screen_num %}
+                    </div>
+                    <div class="mb-3">
+                        {% bootstrap_field form.url_num %}
+                    </div>
+                    <div class="mb-3">
+                        {% bootstrap_field form.project_file %}
+                    </div>
+                </div>
+            </div>
+            {% endwith %}
+            {% endwith %}
+        {% endfor %}
+    </div>
+    <!-- project baseline input -->
+
+    <!-- submit button -->
+    <div class="row">
+        <div class="d-flex justify-content-center">
+            <a href="{% url 'estimate:project_inspection' uidb64=uidb64 token=token %}">
+                <input
+                    class="btn btn-outline-secondary mt-3 mx-2"
+                    type="button" value="이전"
+                >
+            </a>
+
+            <input
+                id="submitButton"
+                class="btn btn-outline-secondary mt-3"
+                type="submit" value="제출"
+            >
+        </div>
+    </div>
+    <!-- submit button -->
+</form>
+{% endblock %}
+
+{% block bottom_content %}
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        document.getElementById("submitButton").addEventListener("click", function(e) {
+            e.preventDefault();
+
+            var confirmed = confirm('정말로 제출하시겠습니까?');
+            if (confirmed) {
+                document.getElementById("baselineForm").submit();
+            } else {
+                // 취소 버튼을 누른 경우 아무 작업도 수행하지 않음
+            }
+        });
+    });
+
+    function handleSelectChange(selectElement) {
+        // 선택 값에 해당하는 입력 필드 객체 저장
+        var targetId = selectElement.id.split('-calc')[0];
+        var targetOpt = selectElement.value
+        changeTargetId = targetId + '-' + targetOpt
+
+        // 보일 객체와 숨길 객체 저장
+        if (targetOpt == 'url_num') {
+            revTargetId = targetId + '-' + 'screen_num'
+        } else {
+            revTargetId = targetId + '-' + 'url_num'
+        }
+        var targetField = document.getElementById(changeTargetId);
+        var revTargetField = document.getElementById(revTargetId);
+
+        // 선택 값은 보이고, 선택되지 않은 값은 숨겨야 함
+        targetField.style.display = 'block';
+        revTargetField.style.display = 'none';
+    }
+</script>
+{% endblock %}

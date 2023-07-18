@@ -1,0 +1,16 @@
+# django & djang extension
+Django==4.2
+django-bootstrap5==23.1
+django-bootstrap-icons==0.8.3
+
+# aws cli
+boto3==1.26.130
+awscli==1.27.131
+
+# excel & pdf
+openpyxl==3.1.2
+pdf2image==1.16.3
+
+# python general lib
+gunicorn==20.1.0
+pytz==2023.3

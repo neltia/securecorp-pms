@@ -1,0 +1,216 @@
+{% extends "base.html" %}
+{% load django_bootstrap5 %}
+{% load bootstrap_icons %}
+{% load custom_filters %}
+{% block content %}
+
+<div class="fs-4">공수산정 결과</div>
+
+<div class="mt-4 mb-3">
+    <div class="d-flex justify-content-end">
+        <i>{% bs_icon 'clock-history' %}</i>
+        견적요청 시간: {{ estimate_doc.apply_date }}
+        <div class="col-md-3"></div>
+    </div>
+</div>
+
+{% if doc_files %}
+<div class="row g-3 align-items-center mb-3">
+    <div class="col-md-1"></div>
+    <div class="col-md-8">
+        <table id="docTable" class="table table-scrollable">
+            <thead class="table-light text-center">
+                <th scope="col">#</th>
+                <th scope="col">종류</th>
+                <th scope="col">참고 파일</th>
+            </thead>
+
+            <tbody>
+                {% for doc_file in doc_files %}
+                {% if doc_file.project_file %}
+                <tr>
+                    <td class="text-center">{{ forloop.counter }}</td>
+                    <td>{{ doc_file.project_scope }}</td>
+                    <td>
+                        <a href="{% url 'estimate:download_file' file_path=doc_file.project_file.path|split_last:'/' file_type='upload' %}">
+                            {{ doc_file.project_file.path|split_last:"/" }}
+                        </a>
+                    </td>
+                {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endif %}
+
+<div class="row g-3 align-items-center mb-3">
+    <div class="col-md-1"></div>
+    <div class="col-md-2">
+        <label for="projectName" class="d-flex justify-content-start">프로젝트명</label>
+    </div>
+    <div class="col-md-6 justify-content-start">
+        <input id="projectName" class="form-control" value="{{ estimate_doc.project_name }}" disabled>
+    </div>
+</div>
+
+<div class="row g-3 align-items-center mb-3">
+    <div class="col-md-1"></div>
+    <div class="col-md-2">
+        <label for="projectType" class="d-flex justify-content-start">프로젝트 분류</label>
+    </div>
+    <div class="col-md-6 justify-content-start">
+        <input id="projectType" class="form-control" value="{{ estimate_doc.project_type }}" disabled>
+    </div>
+</div>
+
+<div class="row g-3 align-items-center mb-3">
+    <div class="col-md-1"></div>
+    <div class="col-md-2">
+        <label for="projectScope" class="d-flex justify-content-start">프로젝트 범위</label>
+    </div>
+    <div class="col-md-6 justify-content-start">
+        <input id="projectScope" class="form-control" value="{{ estimate_doc.project_scope|json_load|list2str }}" disabled>
+    </div>
+</div>
+
+<div class="row g-3 align-items-center mb-3">
+    <div class="col-md-1"></div>
+    <div class="col-md-2">
+        <label for="projectDescription" class="d-flex justify-content-start">프로젝트 설명</label>
+    </div>
+    <div class="col-md-6 justify-content-start">
+        <input id="projectDescription" class="form-control" value="{{ estimate_doc.project_description }}" disabled>
+    </div>
+</div>
+
+<div class="row mt-4 mb-4"></div>
+
+<div class="row g-3 align-items-center mb-3">
+    <div class="col-md-1"></div>
+    <div class="col-md-2">
+        <label class="d-flex justify-content-start">프로젝트 관리자</label>
+    </div>
+    {% for entity in estimate_doc.project_admin|json_load %}
+    {% with entity_value=estimate_doc.project_admin|json_load|get_dict_value:entity %}
+        {% if entity != "project_admin_email" %}
+        <div class="col-md-2 justify-content-start">
+            <input id="{{ entity|snake_to_camel }}" class="form-control" value="{{ entity_value }}" disabled>
+        </div>
+        {% endif %}
+    {% endwith %}
+    {% endfor %}
+</div>
+
+<div class="row g-3 align-items-center mb-3">
+    <div class="col-md-1"></div>
+    <div class="col-md-2">
+        <label class="d-flex justify-content-start"></label>
+    </div>
+    <div class="col-md-6 justify-content-start">
+        {% with entity_value=estimate_doc.project_admin|json_load|get_dict_value:"project_admin_email" %}
+            <input id="projectAdminEmail" class="form-control" value="{{ entity_value }}" disabled>
+        {% endwith %}
+    </div>
+</div>
+
+<div class="row mt-4 mb-4"></div>
+
+<div class="row g-3 align-items-center mb-3">
+    <div class="col-md-1"></div>
+    <div class="col-md-2">(단위: MD)</div>
+</div>
+
+{% for entity in estimate_doc.md_process|json_load %}
+{% with entity_value=estimate_doc.md_process|json_load|get_dict_value:entity %}
+    <div class="row g-3 align-items-center mb-3">
+        <div class="col-md-1"></div>
+        <div class="col-md-2">
+            <label for="{{ entity|snake_to_camel }}" class="d-flex justify-content-start">{{ entity }}</label>
+        </div>
+        <div class="col-md-2 justify-content-start">
+            <input id="{{ entity|snake_to_camel }}" class="form-control" value="{{ entity_value }}" disabled>
+        </div>
+    </div>
+{% endwith %}
+{% endfor %}
+
+<div class="row mt-3 mb-3"></div>
+
+<form method="post">
+    {% csrf_token %}
+    <div class="row g-3 align-items-center mb-3">
+        <div class="col-md-1"></div>
+        <div class="col-md-2">
+            {% bootstrap_label md_form.md_value.label %}
+        </div>
+        <div class="col-md-6 justify-content-start">
+            <input type="number" name="md_value" id="id_md_value" class="form-control"
+                placeholder="{{ md_form.md_value.label }}" required=""
+                value="{{ estimate_doc.md_result }}"
+                disabled
+            />
+        </div>
+    </div>
+
+    <div class="row g-3 align-items-center mb-3">
+        <div class="col-md-1"></div>
+        <div class="col-md-2">
+            <label class="form-label">M/M</label>
+        </div>
+        <div class="col-md-6 justify-content-start">
+            <input type="number" name="mm_value" id="id_mm_value" class="form-control"
+                placeholder="M/M" required=""
+                value="{{ estimate_doc.mm_result }}"
+                disabled
+            />
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-center">
+        <input
+            class="btn btn-outline-secondary mt-2"
+            type="button" value="투입공수 수정" onclick="btnDisabled()"
+        >
+        <a href="{% url 'estimate:doc_list' %}">
+            <input
+                class="btn btn-outline-secondary mt-2 mx-2"
+                type="button" value="견적요청 목록"
+            >
+        </a>
+        <input
+            id="estimate-fin"
+            class="btn btn-outline-secondary mt-2"
+            type="submit" value="공수산정 완료"
+            onclick="return submitCheck();"
+        >
+    </div>
+</form>
+{% endblock %}
+
+{% block bottom_content %}
+<script>
+    $(document).ready(function() {
+        $("#id_md_value").change(function(){
+            var mdValue = $(this).val();
+            var mmValue = Math.round(mdValue / 20);
+            $("#id_mm_value").val(mmValue);
+        });
+    });
+    function btnDisabled() {
+        const target = document.getElementById('id_md_value');
+        target.disabled = false;
+    }
+
+    var submitFlag = true;
+    function submitCheck() {
+        console.log(submitFlag)
+        if(submitFlag){
+            submitFlag = false;
+            return true;
+        } else {
+            return false;
+        }
+    }
+</script>
+{% endblock %}

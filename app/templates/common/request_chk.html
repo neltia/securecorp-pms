@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% load django_bootstrap5 %}
+{% load bootstrap_icons %}
+{% block content %}
+<div class="row mt-2 mb-2"></div>
+
+<div class="position-relative p-5 text-center text-muted bg-body border border-dashed rounded-5">
+    <div class="mt-5 mb-3">
+        {% bs_icon 'check2-circle' size='52px' %}
+    </div>
+    <h1 class="text-body-emphasis mb-4">
+        {{ success_title }}
+    </h1>
+    <p class="col-lg-6 mx-auto mb-4">
+        {{ success_content }}
+    </p>
+</div>
+{% endblock %}
+
+{% block bottom_content %}
+<script>
+    $(document).ready(function(){
+        history.pushState(null, null, location.href);
+        window.onpopstate = function(event) {
+            history.go(1);
+        };
+    })
+</script>
+{% endblock %}

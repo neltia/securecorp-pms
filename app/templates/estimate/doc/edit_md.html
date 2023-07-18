@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+{% load django_bootstrap5 %}
+{% load bootstrap_icons %}
+{% load custom_filters %}
+{% block content %}
+<div class="fs-4">
+    <i>{% bs_icon 'pencil' %}</i>
+    견적 신청 문서
+</div>
+
+<div class="mt-4 mb-3">
+    <div class="d-flex justify-content-end">
+        <i>{% bs_icon 'clock-history' %}</i>
+        견적요청 시간: {{ estimate_doc.apply_date }}
+        <div class="col-md-3"></div>
+    </div>
+</div>
+
+<form method="POST" id="baselineForm" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <div class="row g-3 align-items-center mb-3" style="flex-direction: row-reverse;">
+        <div class="col-md-3"></div>
+        <div class="col-md-auto">
+            <button type="submit" class="btn btn-outline-secondary mt-2">
+                <i>{% bs_icon 'save' %}</i> 저장
+            </button>
+        </div>
+        <div class="col-md-auto d-none d-lg-block">
+            <div class="fs-6">{{ doc_id }}</div>
+        </div>
+    </div>
+
+    {% if doc_files %}
+    <div class="row g-3 align-items-center mb-3">
+        <div class="col-md-1"></div>
+        <div class="col-md-8">
+            <div><span class="text-danger">*</span> 새 파일 업로드 시 기존 파일은 삭제됩니다.</div>
+
+            <table id="docTable" class="table table-scrollable">
+                <thead class="table-light text-center">
+                    <th scope="col">#</th>
+                    <th scope="col">종류</th>
+                    <th scope="col">참고 파일</th>
+                </thead>
+
+                <tbody>
+                    {% for doc_file in doc_files %}
+                    {% if doc_file.project_file %}
+                    <tr>
+                        <td class="text-center">{{ forloop.counter }}</td>
+                        <td>{{ doc_file.project_scope }}</td>
+                        <td>
+                            <a href="{% url 'estimate:download_file' file_path=doc_file.project_file.path|split_last:'/' file_type='upload' %}">
+                                {{ doc_file.project_file.path|split_last:"/" }}
+                            </a>
+                        </td>
+                    {% endif %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="row">
+        <div class="col-md-1"></div>
+        <!-- project baseline input -->
+        <div class="col-md-8" id="formContainer">
+            {{ baseline_form.management_form }}
+            {% for form in baseline_form %}
+                {% with index=forloop.counter0 %}
+                {% with project_scope_item=project_info.project_scope|getitem:index %}
+                <div class="baseline-form shadow-sm p-3 mb-3">
+                    <div class="fs-4">{{ project_scope_item }}</div>
+                    <label class="form-label mt-2">
+                        점검 공수 산정을 위해 개발대상의 화면 수 또는 점검대상 URL 수를 기입해주세요. <span class="text-danger">(*)</span>
+                    </label>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            {% bootstrap_label form.calc_criteria.label %}
+                            {% for radio in form.calc_criteria %}
+                            <div class="custom-control custom-radio">
+                                {{ radio.tag }}
+                                <label class="custom-control-label" for="{{ radio.id_for_label }}">{{ radio.choice_label }}</label>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        <div class="mb-3">
+                            {% bootstrap_field form.screen_num %}
+                        </div>
+                        <div class="mb-3">
+                            {% bootstrap_field form.url_num %}
+                        </div>
+                        <div class="mb-3">
+                            {% bootstrap_field form.project_file %}
+                        </div>
+                    </div>
+                </div>
+                {% endwith %}
+                {% endwith %}
+            {% endfor %}
+            <!-- project baseline input -->
+
+            <div class="mt-3 mb-3"></div>
+
+            <!-- submit button -->
+            <div class="d-flex justify-content-around">
+                <div class="mr-auto p-2">
+                    <a href="{% url 'estimate:doc_edit' doc_id=doc_id %}" class="btn btn-outline-secondary">
+                        이전
+                    </a>
+                </div>
+                <div class="p-2">
+                    <button type="submit" class="btn btn-outline-secondary">
+                        <i>{% bs_icon 'save' %}</i> 저장
+                    </button>
+                </div>
+            </div>
+            <!-- submit button -->
+        </div>
+    </div>
+</form>
+{% endblock %}
+
+{% block bottom_content %}
+<script>
+    function handleSelectChange(selectElement) {
+        // 선택 값에 해당하는 입력 필드 객체 저장
+        var targetId = selectElement.id.split('-calc')[0];
+        var targetOpt = selectElement.value
+        changeTargetId = targetId + '-' + targetOpt
+
+        // 보일 객체와 숨길 객체 저장
+        if (targetOpt == 'url_num') {
+            revTargetId = targetId + '-' + 'screen_num'
+        } else {
+            revTargetId = targetId + '-' + 'url_num'
+        }
+        var targetField = document.getElementById(changeTargetId);
+        var revTargetField = document.getElementById(revTargetId);
+
+        // 선택 값은 보이고, 선택되지 않은 값은 숨겨야 함
+        targetField.style.display = 'block';
+        revTargetField.style.display = 'none';
+    }
+</script>
+{% endblock %}
+

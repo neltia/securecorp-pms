@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% load django_bootstrap5 %}
+{% load bootstrap_icons %}
+{% block content %}
+
+<form action="{% url 'managers:login' %}?next={{ next_url }}" method="post">
+    {% csrf_token %}
+    <div class="row">
+        <div class="mt-5 mb-5"></div>
+        <div class="mt-2 mb-2"></div>
+        <div class="col-md-2"></div>
+        <div class="col-md-6 border shadow p-3 mb-3">
+            <div class="mt-3 mb-3"></div>
+
+            <label class="form-label">
+                {% bs_icon 'lock' size='25px' %}
+                영업 담당자만 열람 가능합니다.
+            </label>
+            <div class="mt-2 mb-2"></div>
+
+            <input
+                id="salesManagerId" class="form-control" value="{{ user_name }}"
+                name="salesManagerId"
+                placeholder="아이디"
+                {% if user_name != '' %}
+                    disabled
+                {% endif %}
+            >
+
+            <div class="mt-2 mb-2"></div>
+            {% bootstrap_field login_form.password show_label=False %}
+
+            <div class="d-flex align-items-end flex-column bd-highlight mb-3">
+                <input class="btn btn-sm btn-outline-secondary mt-auto p-2 bd-highlight" type="submit" value="제출">
+            </div>
+
+            <div class="mt-2 mb-2"></div>
+        </div>
+        <div class="col-md-2"></div>
+    </div>
+</form>
+{% endblock %}

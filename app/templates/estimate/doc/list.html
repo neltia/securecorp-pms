@@ -1,0 +1,142 @@
+{% extends "base.html" %}
+{% load django_bootstrap5 %}
+{% load bootstrap_icons %}
+{% load custom_filters %}
+{% block content %}
+<div class="fs-4">공수산정 견적 요청 목록</div>
+
+<div class="row mt-2 mb-2 mt-3 mx-5"></div>
+
+<div class="table-container" style="overflow-x: auto;">
+    <table id="docTable" class="table table-scrollable table-hover">
+        <thead class="table-light text-center">
+            <th scope="col">
+                <a href="{% url 'estimate:doc_list' %}"
+                    class="text-dark text-decoration-none">
+                    #
+                </a>
+            </th>
+            <th scope="col">요청 사명</th>
+            <th scope="col">신청자</th>
+            <th scope="col">
+                <a href="{% url 'estimate:doc_list' %}?sort=project_type"
+                    class="text-dark text-decoration-none">
+                    분류
+                </a>
+            </th>
+            <th scope="col">프로젝트</th>
+            <th scope="col">
+                <a href="{% url 'estimate:doc_list' %}?sort=project_admin"
+                    class="text-dark text-decoration-none">
+                    관리자
+                </a>
+            </th>
+            <th scope="col">관리자 이메일</th>
+            <th scope="col">
+                <a href="{% url 'estimate:doc_list' %}?sort=md_result"
+                    class="text-dark text-decoration-none">
+                    투입 공수
+                </a>
+            </th>
+            <th scope="col">
+                <a href="{% url 'estimate:doc_list' %}?sort=apply_date"
+                    class="text-dark text-decoration-none">
+                    요청일
+                </a>
+            </th>
+            <th scope="col">
+                <a href="{% url 'estimate:doc_list' %}?sort=update_date"
+                    class="text-dark text-decoration-none">
+                    갱신일
+                </a>
+            </th>
+            <th scope="col">승인 여부</th>
+            <th scope="col">
+                <a href="{% url 'estimate:doc_list' %}?sort=approved_date"
+                    class="text-dark text-decoration-none">
+                    승인일
+                </a>
+            </th>
+            <th scope="col">요청 삭제</th>
+        </thead>
+
+        <tbody>
+            {% for doc in estimate_list|estimate_doc_filter %}
+            {% with claimant_data=doc.claimant|json_load %}
+            {% with project_admin=doc.project_admin|json_load %}
+            {% with md_data=doc.md_process|json_load %}
+            <tr class="text-center" onclick="viewDocument('{{ doc.doc_id }}');">
+                <td>{{ doc.id }}</td>
+
+                <td>{{ claimant_data.company_name }}</td>
+                <td>{{ claimant_data.user_name }}</td>
+
+                <td>{{ doc.project_type }}</td>
+                <td class="text-start">{{ doc.project_name }}</td>
+                <td>{{ project_admin.project_admin_name }}</td>
+                <td class="text-start">{{ project_admin.project_admin_email }}</td>
+                <td>{{ doc.md_result }}</td>
+
+                <td onclick='event.cancelBubble=true;'>{{ doc.apply_date }}</td>
+                <td onclick='event.cancelBubble=true;'>{{ doc.update_date }}</td>
+                <td onclick='event.cancelBubble=true;'>{{ doc.is_approved }}</td>
+                {% if doc.is_approved == 'O' %}
+                    <td onclick='event.cancelBubble=true;'>
+                        {{ doc.approved_date }}
+                    </td>
+                {% else %}
+                    <td onclick='event.cancelBubble=true;'>
+                        <a href="{% url 'estimate:response_chk' doc.doc_id user_id %}" class="text-decoration-none">
+                            [승인하기]
+                        </a>
+                    </td>
+                {% endif %}
+                <td onclick='event.cancelBubble=true;'>
+                    <a href="{% url 'estimate:doc_del' doc.doc_id %}" class="text-decoration-none">
+                        <i>{% bs_icon 'trash-fill' color='black' %}</i>
+                    </a>
+                </td>
+            </tr>
+            {% endwith %}
+            {% endwith %}
+            {% endwith %}
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
+
+{% block head_content %}
+<style>
+.table-container {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.table-scrollable {
+  table-layout: fixed;
+  width: auto;
+  white-space: nowrap;
+}
+
+.table-scrollable th:last-child,
+.table-scrollable td:last-child {
+  min-width: 200px; /* 원하는 최소 너비 조정 */
+  white-space: nowrap;
+}
+</style>
+{% endblock %}
+
+{% block bottom_content %}
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var contentDiv = document.getElementById("mainPage");
+        contentDiv.style.overflowX = "auto";
+    });
+
+    function viewDocument(docId) {
+        var nextUrl = "{% url 'estimate:doc_view' doc_id='doc_id' %}".replace('doc_id', docId);
+        location.href = nextUrl;
+    }
+</script>
+{% endblock %}

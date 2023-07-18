@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% load django_bootstrap5 %}
+{% load bootstrap_icons %}
+{% block content %}
+<div class="fs-4">견적서 발송</div>
+
+<div class="mt-4 row"></div>
+
+<div class="row g-3 align-items-center">
+    <div class="col-md-1"></div>
+    <div class="col-md-1 mx-3"></div>
+    <div class="col-md-7">
+        <div class="card p-1">
+            <div class="card-body">
+              <h5 class="card-title">{{ claimant.user_name }}({{ claimant.email }})님께<br>견적서를 발송하시겠습니까?</h5>
+              <div class="mt-5 d-flex justify-content-end">
+                <a href="{% url 'estimate:response_chk' doc_id=doc_id sales_manager_id=sales_manager_id %}" class="btn btn-outline-secondary">돌아가기</a>
+                <a href="{% url 'estimate:download_file' file_path=report_path file_type='report' %}" class="btn btn-outline-secondary mx-2">다운로드</a>
+                <a href="{% url 'estimate:report_send' doc_id=doc_id %}" class="btn btn-outline-success mx-5">
+                  <i>{% bs_icon 'envelope' %}</i> 발송
+                </a>
+              </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3">
+  <div class="col-md-2"></div>
+  <div class="col-md-8">
+    <img src="{{ media_url }}img_estimate_pdf/{{ pdf_image_path }}" alt="PDF Image" class="container">
+  </div>
+  <div class="col-md-2"></div>
+</div>
+{% endblock %}

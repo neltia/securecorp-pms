@@ -1,0 +1,23 @@
+<!-- pms/templates/home/contact.html  -->
+{% extends "base.html" %}
+{% load django_bootstrap5 %}
+{% block content %}
+<div class="fs-4">견적 신청</div>
+
+<div class="mt-4 row"></div>
+
+<form action="{% url 'estimate:request_contact' %}" method="POST">
+    {% csrf_token %}
+
+    <div class="col-md-4">
+        {% bootstrap_form contact_form %}
+    </div>
+
+    <div class="row">
+        <div class="col justify-content-end">
+            <input class="btn btn-dark mt-3"
+            type="submit" value="이메일 인증하기">
+        </div>
+    </div>
+</form>
+{% endblock %}

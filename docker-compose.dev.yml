@@ -1,0 +1,33 @@
+version: '3.8'
+services:
+  was:
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+    env_file:
+      - .env.dev
+    command:
+      bash -c "
+      python manage.py makemigrations &&
+      python manage.py migrate --run-syncdb &&
+      python manage.py loaddata .config_secret/init_dbdata.json &&
+      python manage.py collectstatic --noinput --clear &&
+      gunicorn config.wsgi.debug:application -w 2 --bind 0.0.0.0:8000"
+    volumes:
+      - static_volume:/app/staticfiles
+      - media_volume:/app/mediafiles
+    expose:
+      - 8000
+  nginx:
+    build: ./nginx
+    ports:
+      - 80:80
+    volumes:
+      - static_volume:/app/staticfiles
+      - media_volume:/app/mediafiles
+    depends_on:
+      - was
+
+volumes:
+  static_volume:
+  media_volume:

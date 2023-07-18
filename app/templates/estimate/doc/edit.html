@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% load django_bootstrap5 %}
+{% load bootstrap_icons %}
+{% block content %}
+<div class="fs-4">
+    <i>{% bs_icon 'pencil' %}</i>
+    견적 신청 문서
+</div>
+
+<div class="mt-4 mb-3">
+    <div class="d-flex justify-content-end">
+        <i>{% bs_icon 'clock-history' %}</i>
+        견적요청 시간: {{ estimate_doc.apply_date }}
+        <div class="col-md-3"></div>
+    </div>
+</div>
+
+<div class="row g-3 align-items-center mb-3" style="flex-direction: row-reverse;">
+    <div class="col-md-3"></div>
+    <div class="col-md-auto"></div>
+    <div class="col-md-auto d-none d-lg-block"></div>
+</div>
+
+<form method="POST">
+    {% csrf_token %}
+
+    <div class="row">
+        <div class="col-md-1"></div>
+        <div class="col-md-8">
+            <div class="shadow-sm p-4">
+                <div class="fs-5 fw-bold mb-3">프로젝트 정보</div>
+                {% bootstrap_form project_info_form %}
+            </div>
+
+            <div class="mt-4 mb-4"></div>
+
+            <div class="shadow-sm p-4">
+                <div class="fs-5 fw-bold mb-3">프로젝트 관리자</div>
+                {% bootstrap_form project_admin_form %}
+            </div>
+
+            <div class="mt-4 mb-4"></div>
+
+            <div class="d-flex flex-row-reverse">
+                <button type="submit" class="btn btn-outline-secondary">
+                    다음
+                </button>
+            </div>
+        </div>
+    </div>
+</form>
+{% endblock %}

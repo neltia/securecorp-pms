@@ -1,0 +1,13 @@
+{% extends '_base.html' %}
+
+{% block navbar %}
+    {% if request.user.is_authenticated %}
+        {% include "sidenav_manager.html" %}
+    {% else %}
+        {% include "sidenav.html" %}
+    {% endif %}
+{% endblock %}
+
+{% block base_content %}
+    {% block content %}{% endblock %}
+{% endblock %}

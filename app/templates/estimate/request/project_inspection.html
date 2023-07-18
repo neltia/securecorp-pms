@@ -1,0 +1,67 @@
+<!-- pms/templates/estimate/inspection_project.html  -->
+{% extends "base.html" %}
+{% load django_bootstrap5 %}
+{% block content %}
+<div class="fs-4">견적신청 - 프로젝트 정보 입력(1/2)</div>
+
+<div class="row mt-2 mb-2"></div>
+
+<form method="POST">
+    {% csrf_token %}
+    <!-- project info input -->
+    <div class="col-md-8">
+        {% bootstrap_form project_info_form %}
+    </div>
+    <!-- project info input -->
+
+    <hr class="hr"/>
+
+    <!-- project admin input -->
+    <div class="row">
+        <div class="col-sm-2">
+            <p>프로젝트 관리자</p>
+        </div>
+        <div class="col-sm-6">
+            {% bootstrap_form project_admin_form %}
+        </div>
+    </div>
+    <!-- project admin input -->
+
+    <!-- submit button -->
+    <div class="row">
+        <div class="d-flex justify-content-center">
+            <input
+                class="btn btn-outline-secondary mt-3"
+                type="submit" value="다음"
+            >
+        </div>
+    </div>
+    <!-- submit button -->
+</form>
+{% endblock %}
+
+{% block bottom_content %}
+<script>
+    var companyName = "{{ customer.company_name }}";
+    var userName = "{{ customer.user_name }}";
+    var phoneNumber = "{{ customer.phone_number }}";
+    var email = "{{ customer.email }}";
+
+    // 고객 인증 단계에서 사용한 정보 자동 삽입 (수정 가능)
+    var adminCompanyName = document.querySelector('input[name="project_admin_company"]');
+    adminCompanyName.placeholder = companyName;
+    adminCompanyName.value = companyName;
+
+    var adminUserName = document.querySelector('input[name="project_admin_name"]');
+    adminUserName.placeholder = userName;
+    adminUserName.value = userName;
+
+    var adminPhoneNum = document.querySelector('input[name="project_admin_phone"]');
+    adminPhoneNum.placeholder = phoneNumber;
+    adminPhoneNum.value = phoneNumber;
+
+    var adminEmailAddr = document.querySelector('input[name="project_admin_email"]');
+    adminEmailAddr.placeholder = email;
+    adminEmailAddr.value = email;
+</script>
+{% endblock %}

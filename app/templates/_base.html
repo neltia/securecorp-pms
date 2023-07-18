@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Securecorp PMS</title>
+
+    <!-- Bootstrap -->
+    {% load django_bootstrap5 %}
+    {% bootstrap_css %}
+    {% bootstrap_javascript %}
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Bootstrap -->
+
+    {% block head_content %}{% endblock %}
+</head>
+<body>
+
+<!-- main content block-->
+<div class="container-fluid">
+    <div class="row flex-nowrap">
+        {% block navbar %} {% endblock %}
+
+        <div class="col py-3 ms-3 mainPage">
+            {% bootstrap_messages %}
+            {% block base_content %}
+            {% endblock %}
+        </div>
+    </div>
+</div>
+<!-- main content block-->
+
+{% block bottom_content %}{% endblock %}
+</body>
+</html>
