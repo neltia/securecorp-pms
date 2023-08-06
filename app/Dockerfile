@@ -7,7 +7,7 @@ ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
 # logging env set
-RUN mkdir /app/securecorp_app/logs
+RUN mkdir -p /app/pms/logs
 RUN touch /app/logs/service_info.log
 
 # apt dependencies

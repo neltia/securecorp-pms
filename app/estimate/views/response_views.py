@@ -5,7 +5,7 @@ from django.contrib import messages
 from estimate.utils import encrypt_urlsafe
 # app
 from estimate.decorators.verfication import manager_required
-from estimate.forms import mdEditableForm
+from estimate.forms import MdEditableForm
 # db
 from django.forms.models import model_to_dict
 from estimate.db_controller import db_estimate
@@ -47,12 +47,12 @@ def response_chk(request, doc_id, sales_manager_id):
         context = {
             "sales_manager_id": user_id, "doc_id": doc_id,
             "estimate_doc": estimate_doc_dict, "doc_files": doc_files,
-            "md_form": mdEditableForm
+            "md_form": MdEditableForm
         }
         return render(request, "estimate/response/chk_doc.html", context=context)
 
     # <POST>: mm value update and redirect estimate send page
-    md_editable_form = mdEditableForm(request.POST)
+    md_editable_form = MdEditableForm(request.POST)
     if md_editable_form.is_valid():
         md_editable_data = md_editable_form.cleaned_data
         db_estimate.update_doc(doc_id, "md_value", md_editable_data)

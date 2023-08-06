@@ -98,5 +98,5 @@ class ProjectBaselineForm(forms.Form):
     project_file = forms.FileField(label="프로젝트 자료 업로드", required=False)
 
 
-class mdEditableForm(forms.Form):
+class MdEditableForm(forms.Form):
     md_value = forms.IntegerField(label="투입 공수")

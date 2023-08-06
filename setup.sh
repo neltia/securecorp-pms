@@ -15,7 +15,7 @@ fi
 
 mv "${service_name}" "${back_dir}"
 
-git clone https://github.com/neltia/securecorp-pms-public.git
+git clone https://github.com/neltia/securecorp-pms.git
 
 cd "${service_name}"
 cp -r "${current_path}/.config_secret" "${current_path}/${service_name}/app/"

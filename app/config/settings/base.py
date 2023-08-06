@@ -101,7 +101,7 @@ LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'Asia/Seoul'
 USE_I18N = True
 USE_L10N = True
-USE_TZ = True
+USE_TZ = False
 
 
 # session
@@ -116,7 +116,9 @@ SESSION_COOKIE_AGE = 60 * 60 * 2
 # Static & Media files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 STATIC_URL = '/static/'
-STATIC_DIRS = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_DIRS = [
+    os.path.join(BASE_DIR, 'static')
+]
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 MEDIA_URL = '/media/'
