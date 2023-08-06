@@ -1,3 +1,4 @@
+from django.urls import reverse
 # encoding
 from django.utils.http import urlsafe_base64_encode
 from django.utils.encoding import force_bytes
@@ -28,7 +29,8 @@ def cert_email(to_email, domain, token):
     body_text += "링크는 1시간 뒤에 만료됩니다.\n"
     # - 인증 링크 추가
     uid = urlsafe_base64_encode(force_bytes(to_email))
-    ret_link = f'http://{domain}/estimate/verify/{uid}/{token}/'
+    url = reverse("estimate:verify_email", kwargs={"uidb64": uid, "token": token})
+    ret_link = f'http://{domain}{url}'
     body_text += ret_link
 
     # 메일 송신 요청
@@ -69,7 +71,8 @@ def req_email(username, to_email, domain, claimant, doc_id):
     body_text += f"{company_name} 회사의 {user_name}님으로부터 공수산정 요청이 발송되었습니다.\n"
     # - 결과 페이지 링크 추가
     username = urlsafe_base64_encode(force_bytes(username))
-    ret_link = f"http://{domain}/estimate/result/{doc_id}/{username}"
+    url = reverse("estimate:response_chk", kwargs={"doc_id": doc_id, "sales_manager_id": username})
+    ret_link = f'http://{domain}{url}'
     body_text += ret_link
 
     # 메일 송신 요청
