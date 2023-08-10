@@ -4,7 +4,7 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login
 # app
 from estimate.decorators.verfication import manager_required
-from managers.forms import SalesManagerLogin
+from managers.forms import SalesManagerLogin, CustomPasswordChangeForm
 # db
 from estimate.db_controller import db_users
 from estimate.db_controller import db_estimate
@@ -51,3 +51,23 @@ def manger_profile(request):
 
     context = {"groups": user_in_group, "estimate_list": approved_doc_list}
     return render(request, "managers/profile.html", context)
+
+
+@manager_required
+def change_password(request):
+    # <GET>
+    if request.method != "POST":
+        form = CustomPasswordChangeForm(request.user)
+        return render(request, 'managers/change_password.html', {'form':form})
+
+    # <POST>
+    form = CustomPasswordChangeForm(request.user, request.POST)
+    if form.is_valid():
+        user = form.save()
+        update_session_auth_hash(request, user)
+        messages.success(request, '비밀번호가 정상적으로 변경되었습니다.')
+        return redirect('managers:profile')
+    else:
+        # print(form.errors)
+        messages.error(request, '입력하신 정보가 유효하지 않습니다.')
+    return redirect("managers:re_password")

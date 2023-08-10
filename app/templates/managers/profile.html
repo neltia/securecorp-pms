@@ -1,6 +1,5 @@
 {% extends "base.html" %}
 {% load django_bootstrap5 %}
-{% load bootstrap_icons %}
 {% block content %}
 <div class="container">
     <div class="row">
@@ -10,6 +9,11 @@
             </div>
         </div>
     </div>
+
+    <div class="mb-3"></div>
+    <a href="{% url 'managers:re_password' %}" class="btn btn-outline-secondary">
+        비밀번호 변경
+    </a>
 
     <div class="row">
         <div class="mt-3 mx-3"></div>
