@@ -21,8 +21,20 @@
 - **Deploy**    : AWS Route53, AWS ELB, AWS ACM, docker-compose
 - **Front-End** : Bootstrap ver. 5.2 (python lib: django-bootstrap5 ver. 23.1)
 - **Back-End**  : `Django 4.2`, gunicorn, Nginx
-- **DB**        : SQLite3 -> PostgreSQL 변경 예정
+- **DB**        : SQLite3
 
+## Preview
+- PAGE: 메인 견적 신청 화면
+<img src="https://postfiles.pstatic.net/MjAyMzA4MjlfMjYg/MDAxNjkzMjM1NjUyMjIw.VxlHv-fYY8mfQLavX7RqH5SuQ2Ec62bjJJqpuHoHgp4g.PVRz4a6rgRH1y7RWOlon8nDyDWSjDSqjf46UzKGAqTMg.PNG.dsz08082/image.png?type=w773"/>
+
+- PAGE: 견적 신청 정보 입력
+<img src="https://postfiles.pstatic.net/MjAyMzA4MjlfMTQ2/MDAxNjkzMjM3MTE0ODQz.qR5hP4OaIaNn86_PqLpjGKAzXMUSePZx5kr05bb6qbcg.W5zec-YXK2hMYGTz1fyytjk6k_PGOiCOCpyrC7K-oYwg.PNG.dsz08082/SE-ad9174fd-2127-4211-8db4-7b39e7b10af6.png?type=w773"/>
+
+- PAGE: 영업 담당자 로그인
+<img src="https://postfiles.pstatic.net/MjAyMzA4MjlfMjI0/MDAxNjkzMjM2ODI2MjY0.N7Rufl9Sl-KQ6G1kaDfR3NVLBojoVcNalPvXu1Q5xfog.RFNgjo32HRi8VCeudSWlxeUTIoh_tq3-LILwyRBZUJIg.PNG.dsz08082/image.png?type=w773"/>
+
+- PAGE: 공수산정 결과
+<img src="https://postfiles.pstatic.net/MjAyMzA4MjlfNjYg/MDAxNjkzMjM3MTUwMTg4.l_fM_BBC1qpMzBY1XaOZe5ruw-DdYdfvg5TPNIEDnJAg.cjhR2-9m-ww8wtZXxOOLx4BCOi-aAqofJKVKK6_TBs0g.PNG.dsz08082/SE-035fa202-2f86-4e12-b1d5-bb6c319bd6f6.png?type=w773"/>
 
 ## 가이드
 ### Configure setting
